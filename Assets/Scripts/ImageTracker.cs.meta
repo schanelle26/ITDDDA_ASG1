@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: bf4c9957121d2314e959aab3a7e01c6a
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - imageManager: {instanceID: 0}
+  - chickenRicePrefab: {fileID: 4430834290161166071, guid: d5ec4a0c8901628438bac2790e378727, type: 3}
+  - nasiLemakPrefab: {fileID: 5318943129680671238, guid: 9402773b47fbb1e4baf53387a1f3bb45, type: 3}
+  - noodlesPrefab: {fileID: 7853793317087280156, guid: 7668e1f30ced747408063b426201f19a, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

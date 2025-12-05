@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "517996173932",
+    "firebase_url": "https://itddda-asg1-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "itddda-asg1",
+    "storage_bucket": "itddda-asg1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:517996173932:android:3a3e0383580caedd575649",
+        "android_client_info": {
+          "package_name": "com.ITDDDA.SGHawker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYCD3RSU6pJ1Ho57t5tDzQCZZkYKxSIGs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:517996173932:android:2bf54e75190b7e23575649",
+        "android_client_info": {
+          "package_name": "com.ItdDDaAsg1.SGHawker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYCD3RSU6pJ1Ho57t5tDzQCZZkYKxSIGs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
