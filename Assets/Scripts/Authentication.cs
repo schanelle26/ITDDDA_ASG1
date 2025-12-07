@@ -1,126 +1,86 @@
-using Firebase.Auth;
 using UnityEngine;
+using Firebase;
+using Firebase.Extensions;
+using Firebase.Auth;
 using TMPro;
-using UnityEngine.UI;
-using System.Collections;
 
 public class Authentication : MonoBehaviour
 {
-    public TMP_InputField EmailInput;
-    public TMP_InputField PasswordInput;
-    public Image ErrorImage;
-    public float ErrorDisplayTime = 2f;
-    public Button LoginButton;
-    public Button SignUpButton;
-    public UIManager uiManager;
+    public TMP_InputField emailInput;
+    public TMP_InputField passwordInput;
+    public UIManager uiManager; 
 
-    private Coroutine currentErrorCoroutine;
+    private bool isFirebaseReady = false;
 
     void Start()
     {
-        if (ErrorImage != null)
-            ErrorImage.gameObject.SetActive(false);
+        // Initialize Firebase before proceeding 
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+        {
+            var dependencyStatus = task.Result;
+            if (dependencyStatus == DependencyStatus.Available)
+            {
+                isFirebaseReady = true;
+                Debug.Log("Firebase is ready!");
+            }
+            else
+            {
+                Debug.LogError($"Could not resolve all Firebase dependencies: {dependencyStatus}");
+            }
+        });
     }
 
     public void SignUp()
     {
-        StartCoroutine(HandleSignUp());
+        if (!isFirebaseReady)
+        {
+            Debug.LogWarning("Firebase not ready yet. Please wait...");
+            return;
+        }
+
+        var createTask = FirebaseAuth.DefaultInstance.CreateUserWithEmailAndPasswordAsync(emailInput.text, passwordInput.text);
+        createTask.ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                Debug.Log("Error creating User!");
+                return;
+            }
+
+            if (task.IsCompleted)
+            {
+                Debug.Log("User created successfully! Navigating to Third Page!");
+                uiManager.ShowThirdPage(); // Navigate to ThirdPage
+                var uid = task.Result.User.UserId;
+                Debug.Log($"Created user UID: {uid}");
+            }
+        });
     }
 
     public void LogIn()
     {
-        StartCoroutine(HandleLogIn());
-    }
-
-    private IEnumerator HandleSignUp()
-    {
-        SetButtonsInteractable(false);
-
-        if (string.IsNullOrEmpty(EmailInput.text) || string.IsNullOrEmpty(PasswordInput.text))
+        if (!isFirebaseReady)
         {
-            yield return ShowErrorTemporarily("Email or Password cannot be empty!");
-            SetButtonsInteractable(true);
-            yield break;
+            Debug.LogWarning("Firebase not ready yet. Please wait...");
+            return;
         }
 
-        var task = FirebaseAuth.DefaultInstance.CreateUserWithEmailAndPasswordAsync(EmailInput.text, PasswordInput.text);
-        yield return new WaitUntil(() => task.IsCompleted);
-
-        if (task.IsCanceled)
+        var loginTask = FirebaseAuth.DefaultInstance.SignInWithEmailAndPasswordAsync(emailInput.text, passwordInput.text);
+        loginTask.ContinueWithOnMainThread(task =>
         {
-            yield return ShowErrorTemporarily("Sign Up Canceled");
-        }
-        else if (task.IsFaulted)
-        {
-            string error = task.Exception.Flatten().InnerExceptions[0].Message;
-            yield return ShowErrorTemporarily("Sign Up Failed: " + error);
-        }
-        else
-        {
-            Debug.Log("Sign Up Success!");
-            uiManager.ShowThirdPage(); // Only switch page on success
-        }
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                Debug.Log("Error logging in!");
+                return;
+            }
 
-        SetButtonsInteractable(true);
-    }
-
-    private IEnumerator HandleLogIn()
-    {
-        SetButtonsInteractable(false);
-
-        if (string.IsNullOrEmpty(EmailInput.text) || string.IsNullOrEmpty(PasswordInput.text))
-        {
-            yield return ShowErrorTemporarily("Email or Password cannot be empty!");
-            SetButtonsInteractable(true);
-            yield break;
-        }
-
-        var task = FirebaseAuth.DefaultInstance.SignInWithEmailAndPasswordAsync(EmailInput.text, PasswordInput.text);
-        yield return new WaitUntil(() => task.IsCompleted);
-
-        if (task.IsCanceled)
-        {
-            yield return ShowErrorTemporarily("Login Canceled");
-        }
-        else if (task.IsFaulted)
-        {
-            string error = task.Exception.Flatten().InnerExceptions[0].Message;
-            yield return ShowErrorTemporarily("Login Failed: " + error);
-        }
-        else
-        {
-            Debug.Log("Login Success!");
-            uiManager.ShowThirdPage(); // Only switch page on success
-        }
-
-        SetButtonsInteractable(true);
-    }
-
-    private IEnumerator ShowErrorTemporarily(string message)
-    {
-        Debug.LogError(message);
-
-        // Cancel previous coroutine if running
-        if (currentErrorCoroutine != null)
-            StopCoroutine(currentErrorCoroutine);
-
-        if (ErrorImage != null)
-            ErrorImage.gameObject.SetActive(true);
-
-        currentErrorCoroutine = StartCoroutine(HideErrorAfterDelay(ErrorDisplayTime));
-        yield return currentErrorCoroutine;
-    }
-
-    private IEnumerator HideErrorAfterDelay(float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-        if (ErrorImage != null)
-            ErrorImage.gameObject.SetActive(false);
-    }
-
-    private void SetButtonsInteractable(bool state)
-    {
-        if (LoginButton != null) LoginButton.interactable = state;
-        if (SignUpButton != null) SignUpButton.interactable = state;
+            if (task.IsCompleted)
+            {
+                Debug.Log("User logged in successfully! Navigating to Third Page!");
+                uiManager.ShowThirdPage(); // Navigate to ThirdPage
+                var uid = task.Result.User.UserId;
+                Debug.Log($"Logged in user UID: {uid}");
+            }
+        });
     }
 }

@@ -16,41 +16,41 @@ public class UIManager : MonoBehaviour
 
     private void HideAll()
     {
-        if (StartBackground != null) StartBackground.SetActive(false);
-        if (LoginSignUp != null) LoginSignUp.SetActive(false);
-        if (ThirdPage != null) ThirdPage.SetActive(false);
-        if (InstructionsPanel != null) InstructionsPanel.SetActive(false);
-        if (ExplorePanel != null) ExplorePanel.SetActive(false);
+        StartBackground?.SetActive(false);
+        LoginSignUp?.SetActive(false);
+        ThirdPage?.SetActive(false);
+        InstructionsPanel?.SetActive(false);
+        ExplorePanel?.SetActive(false);
     }
 
     public void ShowStartBackground()
     {
         HideAll();
-        if (StartBackground != null) StartBackground.SetActive(true);
+        StartBackground.SetActive(true);
     }
 
     public void ShowLoginSignUp()
     {
         HideAll();
-        if (LoginSignUp != null) LoginSignUp.SetActive(true);
+        LoginSignUp.SetActive(true);
     }
 
     public void ShowThirdPage()
     {
         HideAll();
-        if (ThirdPage != null) ThirdPage.SetActive(true);
+        ThirdPage.SetActive(true);
     }
 
     public void ShowInstructions()
     {
         HideAll();
-        if (InstructionsPanel != null) InstructionsPanel.SetActive(true);
+        InstructionsPanel.SetActive(true);
     }
 
     public void ShowExplore()
     {
         HideAll();
-        if (ExplorePanel != null) ExplorePanel.SetActive(true);
+        ExplorePanel.SetActive(true);
     }
 
     public void LoadARScene()
@@ -58,4 +58,3 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene("ARScene");
     }
 }
-
