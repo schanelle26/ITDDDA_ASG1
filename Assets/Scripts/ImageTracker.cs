@@ -1,13 +1,17 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
-public class FoodImageTracker : MonoBehaviour
+public class ImageTracker : MonoBehaviour
 {
     public ARTrackedImageManager imageManager;
 
     public GameObject chickenRicePrefab;
     public GameObject nasiLemakPrefab;
     public GameObject noodlesPrefab;
+
+    // To store spawned objects so that they don’t spawn twice
+    private Dictionary<string, GameObject> spawnedPrefabs = new Dictionary<string, GameObject>();
 
     void OnEnable()
     {
@@ -21,32 +25,46 @@ public class FoodImageTracker : MonoBehaviour
 
     void OnChanged(ARTrackedImagesChangedEventArgs args)
     {
-        foreach (var tracked in args.added)
+        foreach (var trackedImage in args.added)
         {
-            SpawnFood(tracked);
+            UpdateSpawnedObject(trackedImage);
         }
 
-        foreach (var tracked in args.updated)
+        foreach (var trackedImage in args.updated)
         {
-            SpawnFood(tracked);
+            UpdateSpawnedObject(trackedImage);
         }
+
     }
 
-    void SpawnFood(ARTrackedImage tracked)
+    void UpdateSpawnedObject(ARTrackedImage trackedImage)
     {
-        string name = tracked.referenceImage.name;
+        string imageName = trackedImage.referenceImage.name;
+
         GameObject prefabToSpawn = null;
 
-        if (name == "ChickenRice") prefabToSpawn = chickenRicePrefab;
-        if (name == "NasiLemak") prefabToSpawn = nasiLemakPrefab;
-        if (name == "Noodles") prefabToSpawn = noodlesPrefab;
+        if (imageName == "ChickenRice") prefabToSpawn = chickenRicePrefab;
+        if (imageName == "NasiLemak") prefabToSpawn = nasiLemakPrefab;
+        if (imageName == "Noodles") prefabToSpawn = noodlesPrefab;
 
-        if (prefabToSpawn != null)
+        if (prefabToSpawn == null)
+            return;
+
+        // If this marker already spawned an object, reuse it
+        if (!spawnedPrefabs.ContainsKey(imageName))
         {
-            prefabToSpawn.SetActive(true);
-            prefabToSpawn.transform.position = tracked.transform.position;
-            prefabToSpawn.transform.rotation = tracked.transform.rotation;
-            prefabToSpawn.transform.SetParent(tracked.transform);
+            GameObject newObject = Instantiate(prefabToSpawn, trackedImage.transform);
+            spawnedPrefabs.Add(imageName, newObject);
         }
+
+        GameObject spawned = spawnedPrefabs[imageName];
+
+        // Keep the 3D object following the image
+        spawned.transform.SetPositionAndRotation(
+            trackedImage.transform.position,
+            trackedImage.transform.rotation
+        );
+
+        spawned.SetActive(true);
     }
 }

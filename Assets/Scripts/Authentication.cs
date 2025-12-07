@@ -43,7 +43,7 @@ public class Authentication : MonoBehaviour
         {
             if (task.IsFaulted || task.IsCanceled)
             {
-                Debug.Log("Error creating User!");
+                Debug.Log("Error signing up!");
                 return;
             }
 

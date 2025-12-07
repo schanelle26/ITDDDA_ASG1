@@ -2,15 +2,12 @@ using UnityEngine;
 
 public class FoodTargetHandler : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class FoodInteract : MonoBehaviour
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public GameObject infoButton;
+        private void OnMouseDown()
+        {
+            infoButton.SetActive(true);
+        }
     }
 }
