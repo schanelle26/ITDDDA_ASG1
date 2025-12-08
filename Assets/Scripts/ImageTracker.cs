@@ -55,6 +55,10 @@ public class ImageTracker : MonoBehaviour
         {
             GameObject newObject = Instantiate(prefabToSpawn, trackedImage.transform);
             spawnedPrefabs.Add(imageName, newObject);
+
+            DatabaseManager dbManager = FindObjectOfType<DatabaseManager>();
+            dbManager.UpdateFoodCollected(imageName); //Sends image name as food name
+
         }
 
         GameObject spawned = spawnedPrefabs[imageName];
