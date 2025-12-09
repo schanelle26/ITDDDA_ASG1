@@ -1,74 +1,103 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
 
 public class ImageTracker : MonoBehaviour
 {
-    public ARTrackedImageManager imageManager;
+    [SerializeField] private ARTrackedImageManager trackedImageManager;
+    [SerializeField] private GameObject[] placeablePrefabs;
 
-    public GameObject chickenRicePrefab;
-    public GameObject nasiLemakPrefab;
-    public GameObject noodlesPrefab;
-
-    // To store spawned objects so that they don’t spawn twice
+    // Preloaded prefabs
     private Dictionary<string, GameObject> spawnedPrefabs = new Dictionary<string, GameObject>();
+    // Keep track of which images have already spawned
+    private HashSet<string> activeImages = new HashSet<string>();
 
-    void OnEnable()
+    private void OnEnable()
     {
-        imageManager.trackedImagesChanged += OnChanged;
+        trackedImageManager.trackedImagesChanged += OnImageChanged;
+        SetupPrefabs();
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
-        imageManager.trackedImagesChanged -= OnChanged;
+        trackedImageManager.trackedImagesChanged -= OnImageChanged;
     }
 
-    void OnChanged(ARTrackedImagesChangedEventArgs args)
+    private void SetupPrefabs()
     {
-        foreach (var trackedImage in args.added)
+        foreach (GameObject prefab in placeablePrefabs)
         {
-            UpdateSpawnedObject(trackedImage);
+            if (!spawnedPrefabs.ContainsKey(prefab.name))
+            {
+                GameObject obj = Instantiate(prefab);
+                obj.name = prefab.name;
+                obj.SetActive(false);
+                spawnedPrefabs.Add(prefab.name, obj);
+            }
+            else
+            {
+                Debug.LogWarning("Duplicate prefab in array ignored: " + prefab.name);
+            }
         }
-
-        foreach (var trackedImage in args.updated)
-        {
-            UpdateSpawnedObject(trackedImage);
-        }
-
     }
 
-    void UpdateSpawnedObject(ARTrackedImage trackedImage)
+    private void OnImageChanged(ARTrackedImagesChangedEventArgs eventArgs)
     {
-        string imageName = trackedImage.referenceImage.name;
+        foreach (ARTrackedImage trackedImage in eventArgs.added)
+            UpdateImage(trackedImage);
 
-        GameObject prefabToSpawn = null;
+        foreach (ARTrackedImage trackedImage in eventArgs.updated)
+            UpdateImage(trackedImage);
 
-        if (imageName == "ChickenRice") prefabToSpawn = chickenRicePrefab;
-        if (imageName == "NasiLemak") prefabToSpawn = nasiLemakPrefab;
-        if (imageName == "Noodles") prefabToSpawn = noodlesPrefab;
+        foreach (ARTrackedImage trackedImage in eventArgs.removed)
+        {
+            string imgName = trackedImage.referenceImage.name;
+            if (spawnedPrefabs.ContainsKey(imgName))
+            {
+                spawnedPrefabs[imgName].SetActive(false);
+                spawnedPrefabs[imgName].transform.SetParent(null);
+                activeImages.Remove(imgName);
+            }
+        }
+    }
 
-        if (prefabToSpawn == null)
+    private void UpdateImage(ARTrackedImage trackedImage)
+    {
+        if (trackedImage == null) return;
+
+        string imgName = trackedImage.referenceImage.name;
+
+        if (!spawnedPrefabs.ContainsKey(imgName))
+        {
+            Debug.LogWarning("No prefab found for image: " + imgName);
             return;
-
-        // If this marker already spawned an object, reuse it
-        if (!spawnedPrefabs.ContainsKey(imageName))
-        {
-            GameObject newObject = Instantiate(prefabToSpawn, trackedImage.transform);
-            spawnedPrefabs.Add(imageName, newObject);
-
-            DatabaseManager dbManager = FindObjectOfType<DatabaseManager>();
-            dbManager.UpdateFoodCollected(imageName); //Sends image name as food name
-
         }
 
-        GameObject spawned = spawnedPrefabs[imageName];
+        GameObject obj = spawnedPrefabs[imgName];
 
-        // Keep the 3D object following the image
-        spawned.transform.SetPositionAndRotation(
-            trackedImage.transform.position,
-            trackedImage.transform.rotation
-        );
+        if (trackedImage.trackingState == TrackingState.Tracking)
+        {
+            // Only spawn if not already active on this image
+            if (!activeImages.Contains(imgName))
+            {
+                obj.transform.SetParent(trackedImage.transform, false);
+                obj.transform.localPosition = new Vector3(0, 0.05f, 0); // Y-offset
+                obj.transform.localRotation = Quaternion.identity;
+                obj.transform.localScale = Vector3.one * 0.1f;
 
-        spawned.SetActive(true);
+                obj.SetActive(true);
+                activeImages.Add(imgName);
+
+                Debug.Log("Spawning prefab: " + obj.name + " on image: " + imgName);
+            }
+        }
+        else
+        {
+            // Stop tracking
+            obj.SetActive(false);
+            obj.transform.SetParent(null);
+            activeImages.Remove(imgName);
+        }
     }
 }

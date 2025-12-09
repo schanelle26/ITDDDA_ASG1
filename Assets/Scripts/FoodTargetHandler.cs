@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class FoodTargetHandler : MonoBehaviour
 {
-    public GameObject infoButton; // assign in prefab
+    public GameObject infoPanel; // assign in prefab
 
     private void OnMouseDown()
     {
-        if (infoButton != null)
-        {
-            infoButton.SetActive(true); // Show info / recipe button
-        }
+        if (infoPanel != null)
+    {
+        infoPanel.SetActive(true); // shows info and recipie buttons from canvas 
+    }
     }
 }
