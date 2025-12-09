@@ -78,19 +78,22 @@ public class ImageTracker : MonoBehaviour
 
         if (trackedImage.trackingState == TrackingState.Tracking)
         {
-            // Only spawn if not already active on this image
-            if (!activeImages.Contains(imgName))
+            // Always parent to tracked image
+            obj.transform.SetParent(trackedImage.transform, false);
+            obj.transform.localPosition = new Vector3(0, 0.05f, 0); // Y-offset 
+            obj.transform.localRotation = Quaternion.identity;
+            obj.transform.localScale = Vector3.one * 0.1f;
+
+            // Activate prefab if not already active
+            if (!obj.activeSelf)
             {
-                obj.transform.SetParent(trackedImage.transform, false);
-                obj.transform.localPosition = new Vector3(0, 0.05f, 0); // Y-offset
-                obj.transform.localRotation = Quaternion.identity;
-                obj.transform.localScale = Vector3.one * 0.1f;
-
                 obj.SetActive(true);
-                activeImages.Add(imgName);
-
                 Debug.Log("Spawning prefab: " + obj.name + " on image: " + imgName);
             }
+
+            // Track active images
+            if (!activeImages.Contains(imgName))
+                activeImages.Add(imgName);
         }
         else
         {
