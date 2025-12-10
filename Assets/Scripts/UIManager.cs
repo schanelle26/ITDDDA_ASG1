@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
     public GameObject ThirdPage;
     public GameObject InstructionsPanel;
     public GameObject ExplorePanel;
+    public GameObject StallsPage;
 
     void Start()
     {
@@ -21,6 +22,8 @@ public class UIManager : MonoBehaviour
         ThirdPage?.SetActive(false);
         InstructionsPanel?.SetActive(false);
         ExplorePanel?.SetActive(false);
+        StallsPage?.SetActive(false);
+
     }
 
     public void ShowStartBackground()
@@ -51,6 +54,12 @@ public class UIManager : MonoBehaviour
     {
         HideAll();
         ExplorePanel.SetActive(true);
+    }
+
+    public void ShowStallsPage()
+    {
+        HideAll();
+        StallsPage.SetActive(true);
     }
 
     public void LoadARScene()

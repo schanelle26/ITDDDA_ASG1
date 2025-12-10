@@ -5,6 +5,7 @@ public class Gamemanager : MonoBehaviour
 {
     public int totalFoods = 3;
     public int foodsFound = 0;
+
     // to track foods collected by name 
     public Dictionary<string, bool> foodsCollected = new Dictionary<string, bool>(); 
      public ProgressBar progressBar;
@@ -30,6 +31,10 @@ public class Gamemanager : MonoBehaviour
             foodsCollected[foodName] = true; //To mark food as collected
         }
     }
+
+
+
+    
 
 
 }

@@ -8,9 +8,7 @@ public class ImageTracker : MonoBehaviour
     [SerializeField] private ARTrackedImageManager trackedImageManager;
     [SerializeField] private GameObject[] placeablePrefabs;
 
-    // Preloaded prefabs
     private Dictionary<string, GameObject> spawnedPrefabs = new Dictionary<string, GameObject>();
-    // Keep track of which images have already spawned
     private HashSet<string> activeImages = new HashSet<string>();
 
     private void OnEnable()
@@ -78,26 +76,21 @@ public class ImageTracker : MonoBehaviour
 
         if (trackedImage.trackingState == TrackingState.Tracking)
         {
-            // Always parent to tracked image
             obj.transform.SetParent(trackedImage.transform, false);
-            obj.transform.localPosition = new Vector3(0, 0.05f, 0); // Y-offset 
+            obj.transform.localPosition = new Vector3(0, 0.05f, 0);
             obj.transform.localRotation = Quaternion.identity;
             obj.transform.localScale = Vector3.one * 0.1f;
 
-            // Activate prefab if not already active
             if (!obj.activeSelf)
             {
                 obj.SetActive(true);
                 Debug.Log("Spawning prefab: " + obj.name + " on image: " + imgName);
             }
 
-            // Track active images
-            if (!activeImages.Contains(imgName))
-                activeImages.Add(imgName);
+            activeImages.Add(imgName);
         }
         else
         {
-            // Stop tracking
             obj.SetActive(false);
             obj.transform.SetParent(null);
             activeImages.Remove(imgName);
