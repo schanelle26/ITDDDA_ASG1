@@ -80,7 +80,7 @@ The project currently features 3 local foods:
   https://sketchfab.com/3d-models/hainanese-chicken-rice-6a0d0aa3851849508f584248f96cd417
   
 - **UI Icons/Graphics**:
-- https://www.canva.com/
+ https://www.canva.com/
   
 
 ---
