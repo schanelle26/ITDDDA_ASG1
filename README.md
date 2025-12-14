@@ -1,104 +1,139 @@
-# ITD Hawker Explorer AR Food Discovery Experience
+# DDA Hawker Explorer AR Food Discovery Experience
 
-## Project Overview
-This Unity project is an AR-based food discovery experience. Users scan physical food posters using AR image tracking. When a food model appears, users can tap it to:
-- View food-related UI (info & ingredients)
-- Track discovery progress using a progress bar
-- Complete the experience after discovering all foods
 
-The project currently features 3 local foods:
-- Nasi Lemak
-- Chicken Rice
-- Noodles
+This script connects your Unity project to Firebase Realtime Database and Firebase Authentication, providing a complete backend for food stall data, likes, and user comments, with real-time UI updates.
 
----
+##  Documentation & Research
 
-## Walkthrough & Instructions
+This project was developed to demonstrate real-time backend management for a food stall review system in Unity, leveraging Firebase for authentication and data storage. 
+Research included: 
+- https://www.nhb.gov.sg/
+- https://spark.meta.com/blog/meta-spark-announcement/ (Authentication page)
+- https://www.yelp.com/ (like/interactive buttons for each post)
 
-### How to Use and Run the Application
-1. **Platform/Hardware Requirements:**
-   - Unity 
-   - AR-capable mobile device (iOS/Android) with camera
-   - Printed food poster images for AR tracking
-2. **Setup:**
-   - Build and deploy the Unity project to your AR-capable device
-   - Launch the app and grant camera permissions
-3. **Controls:**
-   - **Navigation:** Use on-screen buttons to move between Start, Log in/Sign up, Instructions, Stalls and Explore screens
-   - **AR Scene:** Point your device camera at the food posters
-   - **Interaction:** Tap on the AR food models to view info and ingredients
-   - **Progress:** Watch the progress bar fill and food discovery count increase as you discover each food
-   - **Finish:** After all foods are found, tap the finish button to complete the experience and restart
-4. **Game Cheats/Hacks:**
-   - There are no built-in cheats or hacks. For testing, you may simulate food discovery by tapping models multiple times, but duplicate discoveries are prevented.
-5. **Answer Key/Solutions:**
-   - To complete the experience, scan and tap all three food models: Nasi Lemak, Chicken Rice, and Noodles. The finish button will appear when all are found.
+
+
+- Firebase Unity SDK documentation
+- Unity UI and TMP_Text integration
+- Best practices for real-time database syncing
+- User authentication flows in mobile apps
 
 ---
 
-## Script Breakdown
-
-### 1. FoodTargetHandler.cs
-- Handles user interaction with AR food prefabs
-- Detects taps, identifies food, notifies GameManager, triggers UI updates
-
-### 2. GameManager.cs
-- Tracks discovered foods, prevents duplicates, updates progress bar/text, shows finish button
-
-### 3. ImageTracker.cs
-- Listens for tracked image changes, spawns/attaches prefabs, manages prefab visibility when poster is scanned
-
-### 4. ProgressBar.cs
-- Calculates and updates progress bar fill based on foods found
-
-### 5. UIManager.cs
-- Manages all UI screens and AR panels, handles navigation, displays food info, resets app state
+##  Content Displayed
+- Authentication screens (sign up, log in)
+- UI updates reflecting database changes instantly
+- List of food stalls (name, like count)
+- Real-time like counts for each stall
+- User-submitted comments with user IDs
 
 ---
 
-## Platforms/Hardware Required
-- Unity 2021.3+ with AR Foundation
-- AR-capable iOS/Android device with camera
-- Printed AR marker images (food posters)
+##  Application Purpose
+
+This application caters to users who want to:
+
+- Discover and review food stalls
+- Like their favorite stalls
+- Leave comments and feedback
+- Sign up and log in securely
+- Experience real-time updates and interaction
 
 ---
 
-## Limitations & Known Bugs
-- Requires good lighting and clear AR markers for reliable tracking
-- Only supports three specific food posters
-- No persistent save; progress resets on app restart
-- Occasional AR tracking loss if camera is moved too quickly
-- UI may not scale perfectly on all device resolutions
+##  Wireframe / Game Flow
+
+1. **Authentication Screen**
+	- Sign up or log in
+	- On success, navigate to main app
+2. **Main Stall List**
+	- Displays all stall names
+	- Like buttons for each stall
+	- real time like count text
+3. **Comments Section**
+	- Shows all comments for selected stall
+	- Input field to add new comment
+	- Send button to send comment 
+	- Real-time updates after posting
 
 ---
 
-## References & Credits
-- **AR Foundation**: Unity's AR Foundation package
-- **Food Models/Textures**:
-  https://sketchfab.com/3d-models/food-delicious-nasi-lemak-4625dae3b0814c57bbc7ba24ce2bed95
-  https://sketchfab.com/3d-models/prawn-noodles-scaniverse-lidar-fd3b216a1027470f9b78d210796b95ce
-  https://sketchfab.com/3d-models/hainanese-chicken-rice-6a0d0aa3851849508f584248f96cd417
-  
-- **UI Icons/Graphics**:
- https://www.canva.com/
-  
+##  External Assets / Libraries Used
+
+- **Firebase Unity SDK**: For authentication and real-time database
+- **TextMeshPro (TMP_Text)**: For advanced UI text rendering
+- **Unity UI Toolkit**: For user interface elements
 
 ---
 
-## Solutions (for Game Completion)
-1. Scan the Nasi Lemak poster and tap the AR model
-2. Scan the Chicken Rice poster and tap the AR model
-3. Scan the Noodles poster and tap the AR model
-4. Once all three are found, tap the finish button to complete the experience
+##  Original Artwork / Assets
+
+- Chicken Rice https://skfb.ly/oOATu
+- Nasi Lemak https://skfb.ly/osqoU
+- Prawn Noodles https://skfb.ly/oEyTt
+---
+
+##  Authentication Manager
+
+Handles Firebase user authentication in Unity:
+
+-  Sign up with email & password
+-  Log in with email & password
+-  Prevents auth actions before Firebase is ready
+-  Navigates UI after successful login/signup
+
+### How it works
+
+- Initializes Firebase and checks dependencies before allowing any auth actions.
+- **SignUp**: Creates a new user account, logs the result, and navigates to the next screen on success.
+- **LogIn**: Authenticates existing users, logs the result, and navigates to the next screen on success.
+- Uses a UIManager to keep authentication logic separate from UI logic.
+- Handles errors by blocking actions if Firebase isn’t ready and logging issues.
 
 ---
 
-## Summary
-This project demonstrates:
-- AR image tracking using Unity AR Foundation
-- Interactive AR object selection
-- UI state management
-- Progress tracking and completion logic
+##  Database Manager
 
+Manages food stall data, likes, and comments:
 
+### Stall Creation
 
+- `CreateStallData()`: Creates three stalls (TianChi Chicken Rice, Lemak House, Prawn King) with 0 likes each, stores them in Firebase, and initializes an empty comments node.
+
+### Likes System
+
+- `RetrieveLikes(stallId, TMP_Text)`: Reads and displays the like count for a stall.
+- `IncrementLikes(stallId, TMP_Text)`: Increments the like count and updates Firebase and the UI.
+- Button methods (`LikeStall1()`, `LikeStall2()`, `LikeStall3()`) are designed for Unity UI buttons.
+
+### Comments System
+
+- `SendComment()`: Gets the logged-in user’s ID, sends a comment to Firebase, clears the input, and refreshes the comments display.
+- `RetrieveComments()`: Fetches and displays all comments, showing “No comments yet.” if empty, and auto-refreshes after new comments.
+
+---
+
+##  In One Sentence
+
+This script creates stalls, handles likes, stores and retrieves user comments, and keeps the Unity UI synced with Firebase in real time.
+
+---
+
+##  Firebase Usage
+
+- **Firebase Realtime Database**: Stores stalls, likes, and comments.
+- **Firebase Authentication**: Identifies which user posted each comment.
+
+---
+
+##  Error Handling
+
+- Prevents login/signup before Firebase is ready
+- Detects and logs errors from Firebase tasks
+- Avoids app crashes with basic error handling
+
+---
+
+##  Summary
+
+This backend controller safely initializes Firebase, manages user authentication, creates and updates food stall data, handles likes and comments, and keeps your Unity UI in sync with Firebase—all with real-time updates and basic error detection.
