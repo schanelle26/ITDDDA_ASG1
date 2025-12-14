@@ -24,11 +24,11 @@ The project currently features 3 local foods:
    - Build and deploy the Unity project to your AR-capable device
    - Launch the app and grant camera permissions
 3. **Controls:**
-   - **Navigation:** Use on-screen buttons to move between Start, Instructions, and Explore screens
+   - **Navigation:** Use on-screen buttons to move between Start, Log in/Sign up, Instructions, Stalls and Explore screens
    - **AR Scene:** Point your device camera at the food posters
    - **Interaction:** Tap on the AR food models to view info and ingredients
-   - **Progress:** Watch the progress bar fill as you discover each food
-   - **Finish:** After all foods are found, tap the finish button to complete the experience
+   - **Progress:** Watch the progress bar fill and food discovery count increase as you discover each food
+   - **Finish:** After all foods are found, tap the finish button to complete the experience and restart
 4. **Game Cheats/Hacks:**
    - There are no built-in cheats or hacks. For testing, you may simulate food discovery by tapping models multiple times, but duplicate discoveries are prevented.
 5. **Answer Key/Solutions:**
@@ -46,7 +46,7 @@ The project currently features 3 local foods:
 - Tracks discovered foods, prevents duplicates, updates progress bar/text, shows finish button
 
 ### 3. ImageTracker.cs
-- Listens for tracked image changes, spawns/attaches prefabs, manages prefab visibility
+- Listens for tracked image changes, spawns/attaches prefabs, manages prefab visibility when poster is scanned
 
 ### 4. ProgressBar.cs
 - Calculates and updates progress bar fill based on foods found
