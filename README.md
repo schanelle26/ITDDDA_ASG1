@@ -1,7 +1,7 @@
 # DDA Hawker Explorer AR Food Discovery Experience
 
 
-This script connects your Unity project to Firebase Realtime Database and Firebase Authentication, providing a complete backend for food stall data, likes, and user comments, with real-time UI updates.
+This script connects the Unity project to Firebase Realtime Database and Firebase Authentication, providing a complete backend for food stall data, likes, and user comments, with real-time UI updates.
 
 ##  Documentation & Research
 
