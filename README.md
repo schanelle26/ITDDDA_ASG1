@@ -1,4 +1,4 @@
-# ITD AR Food Discovery Experience
+# ITD Hawker Explorer AR Food Discovery Experience
 
 ## Project Overview
 This Unity project is an AR-based food discovery experience. Users scan physical food posters using AR image tracking. When a food model appears, users can tap it to:
